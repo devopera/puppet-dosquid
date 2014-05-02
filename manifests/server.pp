@@ -22,9 +22,14 @@ class dosquid::server (
     cache_dir_size => $cache_dir_size_gb * 1024,
     require => Class['docommon'],
   }
-  
+
+  # protect squid service on active machines
+  Service <| title == $squid::params::service |> {
+    tag => 'service-sensitive',
+  }
+
   class { 'dosquid::firewall' : }
-  
+
   @domotd::register { "Squid(${squid_port})" : }
 
 }
