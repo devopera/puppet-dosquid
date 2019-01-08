@@ -17,6 +17,7 @@ class dosquid::server (
   # setup squid server and expose port
   class { 'squid':
     visible_hostname => $fqdn,
+    http_port => $squid_port,
     localnet_src => $localnet_src,
     cache_dir => $cache_dir,
     cache_dir_size => $cache_dir_size_gb * 1024,
@@ -28,7 +29,9 @@ class dosquid::server (
     tag => 'service-sensitive',
   }
 
-  class { 'dosquid::firewall' : }
+  class { 'dosquid::firewall' :
+    squid_port => $squid_port,
+  }
 
   @domotd::register { "Squid(${squid_port})" : }
 
