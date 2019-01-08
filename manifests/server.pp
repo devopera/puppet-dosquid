@@ -12,6 +12,7 @@ class dosquid::server (
   # cache size in gigabytes (10GB default)
   $cache_dir_size_gb = 10,
 
+  $firewall = true
 ) {
 
   # setup squid server and expose port
@@ -29,8 +30,10 @@ class dosquid::server (
     tag => 'service-sensitive',
   }
 
-  class { 'dosquid::firewall' :
-    squid_port => $squid_port,
+  if ($firewall) {
+    class { 'dosquid::firewall' :
+      squid_port => $squid_port,
+    }
   }
 
   @domotd::register { "Squid(${squid_port})" : }
